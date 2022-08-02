@@ -91,3 +91,14 @@ You can run Omni locally without having to install it from the Chrome Store or f
 #
 
 Feel free to reach out to me through email at hi@alyssax.com or [on Twitter](https://twitter.com/alyssaxuu) if you have any questions or feedback! Hope you find this useful 💜
+
+
+# Fork Update
+
+ omni 是一款非常不错的插件,可谓是相见恨晚.在使用一个上午倍感提升效率,不过针对部分书签期望是允许内容自动替换,比如检索内容
+- 检索框中文提示
+- 检索内容替换书签URL中的${search}
+举个栗子:
+![img.png](img.png)
+使用 / 分离搜索的书签和替换的文本
+![img_1.png](img_1.png)

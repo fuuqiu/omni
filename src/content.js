@@ -194,7 +194,7 @@ $(document).ready(() => {
 			'(\\#[-a-z\\d_]*)?$','i'); // fragment locator
 		return !!pattern.test(str);
 	}
-
+	// 在omni中搜索动作
 	// Search for an action in the omni
 	function search(e) {
 		if (e.keyCode == 37 || e.keyCode == 38 || e.keyCode == 39 || e.keyCode == 40 || e.keyCode == 13 || e.keyCode == 37) {
@@ -214,12 +214,17 @@ $(document).ready(() => {
 			chrome.runtime.sendMessage({request:"search-history", query:query}, (response) => {
 				populateOmniFilter(response.history);
 			});
-		} else if (value.startsWith("/bookmarks")) {
+		} else if (value.startsWith("/bookmarks")) { 
 			$(".omni-item[data-index='"+actions.findIndex(x => x.action == "search")+"']").hide();
 			$(".omni-item[data-index='"+actions.findIndex(x => x.action == "goto")+"']").hide();
 			var tempvalue = value.replace("/bookmarks ", "");
 			if (tempvalue != "/bookmarks" && tempvalue != "") {
-				var query = value.replace("/bookmarks ", "");
+				//书签检索  /bookmarks 知乎检索/内容   分割${search}
+				const s = value.replace("/bookmarks ", "");
+				var query = s.split("/")[0]
+				// var query = value.replace("/bookmarks ", "");
+				console.log(query)
+
 				chrome.runtime.sendMessage({request:"search-bookmarks", query:query}, (response) => {
 					populateOmniFilter(response.bookmarks);
 				});
@@ -284,7 +289,7 @@ $(document).ready(() => {
 		$(".omni-item-active").removeClass("omni-item-active");
 		$(".omni-extension #omni-list .omni-item:visible").first().addClass("omni-item-active");
 	}
-
+	// 处理来自omni的动作
 	// Handle actions from the omni
 	function handleAction(e) {
 		var action = actions[$(".omni-item-active").attr("data-index")];
@@ -298,10 +303,20 @@ $(document).ready(() => {
 				window.open($(".omni-item-active").attr("data-url"), "_self");
 			}
 		} else if ($(".omni-extension input").val().toLowerCase().startsWith("/bookmarks")) {
+			//处理检索内容自动填充
+			const value = $("#omni-search").find("input:first").val(); 
+			const s = value.replace("/bookmarks ", "");
+			let url = $(".omni-item-active").attr("data-url");
+			const query = s.split("/")
+			if(query.length>=2){
+				url  = url.replace("${search}",query[1])
+			}
 			if (e.ctrlKey || e.metaKey) {
-				window.open($(".omni-item-active").attr("data-url"));
-			} else {
-				window.open($(".omni-item-active").attr("data-url"), "_self");
+				window.open(url);
+				// window.open($(".omni-item-active").attr("data-url"));
+			} else { 
+				// window.open($(".omni-item-active").attr("data-url"), "_self");
+				window.open(url, "_self");
 			}
 		} else {
 			chrome.runtime.sendMessage({request:action.action, tab:action, query:$(".omni-extension input").val()});
