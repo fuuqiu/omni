@@ -158,16 +158,28 @@ $(document).ready(() => {
 	function checkShortHand(e, value) {
 		var el = $(".omni-extension input");
 		if (e.keyCode != 8) {
+			//处理中文输入法候选浮窗 
+			
 			if (value == "/t") {
+				el.blur()//失去焦点
 				el.val("/tabs ")
+				el.focus()//获得焦点
 			} else if (value == "/b") {
+				el.blur()
 				el.val("/bookmarks ")
+				el.focus()
 			} else if (value == "/h") {
+				el.blur()
 				el.val("/history ");
+				el.focus()
 			} else if (value == "/r") {
+				el.blur()
 				el.val("/remove ");
+				el.focus()
 			} else if (value == "/a") {
+				el.blur()
 				el.val("/actions ");
+				el.focus()
 			}
 		} else {
 			if (value == "/tabs" || value == "/bookmarks" || value == "/actions" || value == "/remove" || value == "/history") {
