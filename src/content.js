@@ -158,8 +158,7 @@ $(document).ready(() => {
 	function checkShortHand(e, value) {
 		var el = $(".omni-extension input");
 		if (e.keyCode != 8) {
-			//处理中文输入法候选浮窗 
-			
+			//处理中文输入法候选浮窗
 			if (value == "/t") {
 				el.blur()//失去焦点
 				el.val("/tabs ")
@@ -206,6 +205,9 @@ $(document).ready(() => {
 			'(\\#[-a-z\\d_]*)?$','i'); // fragment locator
 		return !!pattern.test(str);
 	}
+
+ 
+	
 	// 在omni中搜索动作
 	// Search for an action in the omni
 	function search(e) {
@@ -238,6 +240,16 @@ $(document).ready(() => {
 				console.log(query)
 
 				chrome.runtime.sendMessage({request:"search-bookmarks", query:query}, (response) => {
+					//url indexOf ${search} desc
+					response.bookmarks.sort(function(a,b){ 
+						if(a.url.indexOf("${search}") !== -1){
+							return -1;
+						}
+						if(b.url.indexOf("${search}") !== -1){
+							return 1;
+						}
+						return 0;
+					})
 					populateOmniFilter(response.bookmarks);
 				});
 			} else {
